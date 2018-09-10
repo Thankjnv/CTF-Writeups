@@ -6,9 +6,9 @@ We get an ELF file which lets us join the army, print the details of our soldier
 The final goal is to get a buffer overflow due to the fact that there are 2 different global variables for ```length of answer```.  
 ## The Bug  
 While creating a soldier we can choose what will be the size of our answer. The size we are giving it will always be updated in the soldier's struct but ```global_answer_length``` won't be updated if the malloc for this size has failed.  
-[1](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/1.png)  
+![1](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/1.png)  
 We can combine this problem with the functionality of 'promotion' in order to overflow into the return address.  
-[2](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/2.png)  
+![2](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/2.png)  
 We can see that alloca's size is based on ```soldier_struct->answer_length``` while read takes ```global_answer_length``` as its parameter.  
 After attempting to get a promotion we will actually get demoted and our soldier_struct will be freed and zeroed.  
 On the other hand, ```global_answer_length``` keeps its previous value.  
@@ -23,7 +23,7 @@ We are taking the following steps in order to exploit the program.
 6. Enjoy the shell :)  
 ## Way of Work  
 Start by running checksec on the file and then open it with IDA.  
-[3](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/3.png)  
+![3](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/3.png)  
 Something caught my eye just as I opened IDA ```printf("Beginner's Luck : %s\n", &off_602020);```.  
 The program prints the value of puts (an address in libc).  
 We can leak the libc that the server is using with the following code and [libc-database](https://github.com/niklasb/libc-database).  
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     exploit(is_remote)
 ```  
 We find that the remote libc is ```libc6_2.23-0ubuntu10_amd64```  
-[4](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/4.png)  
+![4](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/4.png)  
 I opened the print_menu function and after taking a quick look at each of the other functions we understand the options that stand before us:  
 1. Add a soldier (if there isn't already one).  
 2. Print the soldier's details (if one exists).  
@@ -81,7 +81,7 @@ struct soldier_struct
 While adding a soldier we give it some data (name, height, weight, length of answer and description).  
 After giving the program ```length_of_answer``` it will attempt to malloc this size. Only if the malloc succeeds it will update the value of ```global_answer_length``` as well.  
 Here is the code of the function (we only care about lines 33-45):  
-[5](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/5.png)  
+![5](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/5.png)  
 There is nothing useful in print_details function so we are just going to skip it.  
 Moving on to promotion. The function will allocate memory in the stack according to ```soldier_struct->answer_length```. Right afterwards it will do ```read(0, buf, global_answer_length);```. Since ```global_answer_length``` should always be the same as ```soldier_struct->answer_length``` we shouldn't encounter any problem, but that's not always the case.  
 After trying to promote a soldier it's allocated fields will be freed and the entire struct will be zeroed. ```global_answer_length``` will remain as it was.  
@@ -196,4 +196,4 @@ if __name__ == '__main__':
     exploit(is_remote)
 ```
 I can only show you the local exploit because they didn't leave the servers up.  
-[6](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/6.png)  
+![6](https://github.com/Thankjnv/CTF-Writeups/blob/master/HackIT-CTF-2018/Images/6.png)  
