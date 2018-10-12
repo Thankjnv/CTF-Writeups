@@ -100,7 +100,7 @@ checksec yielded the following result:
 
 PIE is disabled, which means we know the addresses of the text segment, bss, GOT-PLT, etc.  
 
-Now it's time to start looking at the source code and understand the program's functionality.  
+Now it's time to start reading through the source code and understand the program's functionality.  
 
 After a quick examine we can understand it's a contact list which provides us the 4 following options: Display contact, create contact, delete_contact and set a contact's bio.  
 
