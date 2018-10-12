@@ -96,7 +96,7 @@ I used [libc databse](https://github.com/niklasb/libc-database) and identified t
 
 checksec yielded the following result:  
 
-![checksec](images/checksec.png)  
+![checksec](Images/checksec.png)  
 
 PIE is disabled, which means we know the addresses of the text segment, bss, GOT-PLT, etc.  
 
@@ -310,7 +310,7 @@ if __name__ == '__main__':
     exploit(is_remote)
 ```
 
-![leaked_libc](images/leaked_libc.png)  
+![leaked_libc](Images/leaked_libc.png)  
 
 It worked!! Leaking libc is always a great step towards a shell :)  
 
@@ -523,7 +523,7 @@ def exploit(is_remote):
     r.interactive()
 ```
 
-![shell](images/shell.png)  
+![shell](Images/shell.png)  
 
 (Ignore the fl*, I was too lazy to write 'flag.txt').  
 
